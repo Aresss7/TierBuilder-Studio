@@ -1,6 +1,6 @@
 {
-  "appId": "com.tiercraft.studio",
-  "productName": "TierCraft Studio",
+  "appId": "com.tierbuilder.studio",
+  "productName": "TierBuilder Studio",
   "directories": {
     "output": "release",
     "buildResources": "build"
@@ -32,8 +32,8 @@
     "allowToChangeInstallationDirectory": true,
     "createDesktopShortcut": true,
     "createStartMenuShortcut": true,
-    "shortcutName": "TierCraft Studio",
-    "uninstallDisplayName": "TierCraft Studio",
-    "artifactName": "TierCraft-Studio-Setup-${version}.${ext}"
+    "shortcutName": "TierBuilder Studio",
+    "uninstallDisplayName": "TierBuilder Studio",
+    "artifactName": "TierBuilder-Studio-Setup-${version}.${ext}"
   }
 }

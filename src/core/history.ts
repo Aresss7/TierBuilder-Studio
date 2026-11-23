@@ -33,6 +33,7 @@ export type ProjectAction =
     }
   | { type: 'UPDATE_ITEM'; itemId: string; patch: Partial<Omit<TierItem, 'id' | 'assetId'>> }
   | { type: 'DELETE_ITEM'; itemId: string }
+  | { type: 'RESET_ALL_TO_UNRANKED' }
   | { type: 'RESET_ALL_CUSTOM_SIZES' }
   | { type: 'APPLY_TEMPLATE'; template: TierTemplate };
 
@@ -309,6 +310,21 @@ export function applyProjectAction(state: TierProject, action: ProjectAction): T
           ...t,
           itemIds: t.itemIds.filter((id) => id !== action.itemId),
         })),
+        updatedAt: now,
+      };
+    }
+
+    case 'RESET_ALL_TO_UNRANKED': {
+      const rankedIds = state.tiers.flatMap((t) => t.itemIds);
+      if (rankedIds.length === 0) return state;
+      const existingUnranked = new Set(state.unrankedIds);
+      const appended = rankedIds.filter((id) => !existingUnranked.has(id));
+      return {
+        ...state,
+        tiers: state.tiers.map((t) =>
+          t.itemIds.length > 0 ? { ...t, itemIds: [] } : t
+        ),
+        unrankedIds: [...state.unrankedIds, ...appended],
         updatedAt: now,
       };
     }

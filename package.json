@@ -1,9 +1,9 @@
 {
-  "name": "tiercraft-studio",
+  "name": "tierbuilder-studio",
   "private": true,
   "version": "1.0.0",
   "description": "Настольная студия для создания, настройки и экспорта тир-листов в высоком разрешении.",
-  "author": "TierCraft Studio",
+  "author": "TierBuilder Studio",
   "main": "dist-electron/electron/main.js",
   "type": "module",
   "scripts": {

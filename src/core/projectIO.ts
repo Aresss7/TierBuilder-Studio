@@ -44,7 +44,7 @@ export async function exportProjectTierlistFile(
   const fileName = `${sanitizeFileBase(project.name)}.tierlist`;
   return bridge.saveExportFile(
     fileName,
-    [{ name: 'Пакет TierCraft (.tierlist)', extensions: ['tierlist'] }],
+    [{ name: 'Пакет TierBuilder (.tierlist)', extensions: ['tierlist'] }],
     zipBytes,
     'application/octet-stream'
   );

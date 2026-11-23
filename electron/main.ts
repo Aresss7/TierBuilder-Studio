@@ -43,7 +43,7 @@ function createWindow() {
     minWidth: 1080,
     minHeight: 700,
     backgroundColor: '#0F1115',
-    title: 'TierCraft Studio',
+    title: 'TierBuilder Studio',
     ...(windowIcon ? { icon: windowIcon } : {}),
     autoHideMenuBar: true,
     webPreferences: {

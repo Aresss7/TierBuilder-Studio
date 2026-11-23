@@ -54,10 +54,10 @@ export function packTierlistArchive(
   thumbnailPng?: Uint8Array | null
 ): Uint8Array {
   const manifest: TierlistPackageManifest = {
-    format: 'tiercraft-package',
+    format: 'tierbuilder-package',
     version: 1,
     exportedAt: new Date().toISOString(),
-    app: 'TierCraft Studio',
+    app: 'TierBuilder Studio',
     projectName: project.name,
   };
 
@@ -96,7 +96,10 @@ export function unpackTierlistArchive(archiveBytes: Uint8Array): {
   }
 
   const manifest = JSON.parse(strFromU8(manifestRaw)) as Partial<TierlistPackageManifest>;
-  if (manifest.format !== 'tiercraft-package') {
+  if (
+    manifest.format !== 'tierbuilder-package' &&
+    manifest.format !== 'tiercraft-package'
+  ) {
     throw new Error('Неподдерживаемый формат пакета .tierlist');
   }
 
@@ -157,7 +160,7 @@ export function serializeJsonBackup(
   }
 
   const backup: TierlistBackupJSON = {
-    format: 'tiercraft-backup',
+    format: 'tierbuilder-backup',
     version: 1,
     exportedAt: new Date().toISOString(),
     project,
@@ -186,8 +189,11 @@ export function parseJsonBackup(rawJson: string): {
   }
 
   const obj = parsed as Partial<TierlistBackupJSON>;
-  if (obj.format !== 'tiercraft-backup' || !obj.project) {
-    throw new Error('Файл не является резервной копией TierCraft Studio.');
+  if (
+    (obj.format !== 'tierbuilder-backup' && obj.format !== 'tiercraft-backup') ||
+    !obj.project
+  ) {
+    throw new Error('Файл не является резервной копией TierBuilder Studio.');
   }
 
   const normalizedProject = validateAndNormalizeProject(obj.project);

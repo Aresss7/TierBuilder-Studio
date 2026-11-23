@@ -234,7 +234,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-8 px-6 py-3.5">
           {/* Zone 1: Single-line Brand Wordmark */}
           <span className="font-display text-lg font-bold tracking-tight whitespace-nowrap shrink-0">
-            TierCraft Studio
+            TierBuilder Studio
           </span>
 
           {/* Zone 2: Clean Typography Nav Links */}

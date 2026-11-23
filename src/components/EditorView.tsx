@@ -13,6 +13,7 @@ import {
   Moon,
   Plus,
   Redo2,
+  RotateCcw,
   SlidersHorizontal,
   Sun,
   Trash2,
@@ -94,6 +95,7 @@ export const EditorView: React.FC<EditorViewProps> = ({
     description: string;
     confirmLabel: string;
     secondaryLabel?: string;
+    danger?: boolean;
     onConfirm: () => void;
     onSecondary?: () => void;
   } | null>(null);
@@ -249,6 +251,7 @@ export const EditorView: React.FC<EditorViewProps> = ({
         description: `В этом тире находится ${tier.itemIds.length} изображений. Вы можете вернуть их в область нераспределённых или удалить вместе с тиром.`,
         confirmLabel: 'Удалить с фото',
         secondaryLabel: 'Вернуть фото в пул',
+        danger: true,
         onConfirm: () => {
           dispatchAction({
             type: 'DELETE_TIER',
@@ -271,6 +274,29 @@ export const EditorView: React.FC<EditorViewProps> = ({
     },
     [dispatchAction]
   );
+
+  const rankedCount = project.tiers.reduce((sum, t) => sum + t.itemIds.length, 0);
+
+  const handleRequestResetTierList = useCallback(() => {
+    const count = latestProjectRef.current.tiers.reduce(
+      (sum, t) => sum + t.itemIds.length,
+      0
+    );
+    if (count === 0) return;
+
+    setConfirmState({
+      title: 'Сбросить тир-лист?',
+      description: `Все оценённые карточки (${count} шт.) будут возвращены в область нераспределённых изображений. Названия, цвета и настройки тиров сохранятся.`,
+      confirmLabel: 'Сбросить в пул',
+      danger: false,
+      onConfirm: () => {
+        dispatchAction({ type: 'RESET_ALL_TO_UNRANKED' });
+        setPoolCollapsed(false);
+        setConfirmState(null);
+        onNotify('Все оценённые карточки возвращены в нераспределённые');
+      },
+    });
+  }, [dispatchAction, onNotify]);
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -685,8 +711,19 @@ export const EditorView: React.FC<EditorViewProps> = ({
           </div>
         </div>
 
-        {/* Right: Package export, Save Template, Theme, Primary Export */}
+        {/* Right: Reset Tierlist, Package export, Save Template, Theme, Inspector, Primary Export */}
         <div className="flex items-center gap-2 shrink-0">
+          <button
+            type="button"
+            disabled={rankedCount === 0}
+            onClick={handleRequestResetTierList}
+            title="Сбросить тир-лист: вернуть все оценённые карточки в нераспределённые"
+            className="flex items-center gap-1.5 rounded-lg border border-slate-200 dark:border-[#272B36] px-2.5 py-1.5 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#1E222B] disabled:opacity-40 transition-colors whitespace-nowrap"
+          >
+            <RotateCcw className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline">Сбросить</span>
+          </button>
+
           <button
             type="button"
             onClick={async () => {
@@ -770,16 +807,9 @@ export const EditorView: React.FC<EditorViewProps> = ({
             className="flex-1 overflow-auto p-6"
           >
             <div
-              style={
-                zoom === 1
-                  ? { width: '100%' }
-                  : {
-                      width: '1120px',
-                      transform: `scale(${zoom})`,
-                      transformOrigin: 'top center',
-                    }
-              }
-              className="mx-auto transition-transform duration-100"
+              style={{
+                zoom,
+              }}
             >
               {/* Actual Tier List Frame (mirrors Export Canvas 2D geometry) */}
               <div
@@ -985,6 +1015,7 @@ export const EditorView: React.FC<EditorViewProps> = ({
         description={confirmState?.description ?? ''}
         confirmLabel={confirmState?.confirmLabel}
         secondaryLabel={confirmState?.secondaryLabel}
+        danger={confirmState?.danger ?? true}
         onConfirm={() => confirmState?.onConfirm()}
         onSecondary={confirmState?.onSecondary}
         onCancel={() => setConfirmState(null)}

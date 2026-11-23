@@ -1,5 +1,5 @@
 {
-  "name": "TierCraft Studio",
+  "name": "TierBuilder Studio",
   "description": "Настольная студия для создания, настройки и экспорта тир-листов в высоком разрешении.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]

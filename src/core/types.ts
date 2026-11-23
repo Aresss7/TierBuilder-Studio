@@ -90,15 +90,15 @@ export interface TierTemplate {
 }
 
 export interface TierlistPackageManifest {
-  format: 'tiercraft-package';
+  format: 'tierbuilder-package' | 'tiercraft-package';
   version: 1;
   exportedAt: string;
-  app: 'TierCraft Studio';
+  app: 'TierBuilder Studio' | 'TierCraft Studio';
   projectName: string;
 }
 
 export interface TierlistBackupJSON {
-  format: 'tiercraft-backup';
+  format: 'tierbuilder-backup' | 'tiercraft-backup';
   version: 1;
   exportedAt: string;
   project: TierProject;
