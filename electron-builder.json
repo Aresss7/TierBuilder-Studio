@@ -1,0 +1,39 @@
+{
+  "appId": "com.tiercraft.studio",
+  "productName": "TierCraft Studio",
+  "directories": {
+    "output": "release",
+    "buildResources": "build"
+  },
+  "files": [
+    "dist/**/*",
+    "dist-electron/**/*",
+    "build/icon.*",
+    "package.json"
+  ],
+  "extraResources": [
+    {
+      "from": "src/assets/images",
+      "to": "seed-assets",
+      "filter": ["**/*"]
+    }
+  ],
+  "win": {
+    "target": [
+      {
+        "target": "nsis",
+        "arch": ["x64"]
+      }
+    ]
+  },
+  "nsis": {
+    "oneClick": false,
+    "perMachine": false,
+    "allowToChangeInstallationDirectory": true,
+    "createDesktopShortcut": true,
+    "createStartMenuShortcut": true,
+    "shortcutName": "TierCraft Studio",
+    "uninstallDisplayName": "TierCraft Studio",
+    "artifactName": "TierCraft-Studio-Setup-${version}.${ext}"
+  }
+}
