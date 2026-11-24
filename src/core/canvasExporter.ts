@@ -153,6 +153,7 @@ function measureTierRowHeight(
   rowPad: number
 ): number {
   const app = project.appearance;
+  const isOverlay = (app.captionPosition ?? 'below') === 'overlay';
   const captionFontSize = 11.5 * scale;
   const captionBarHeight = Math.round(captionFontSize * 1.85 + 6 * scale);
   const minH = Math.max(48, tier.height) * scale;
@@ -168,7 +169,7 @@ function measureTierRowHeight(
     const cardImgH = (item.customHeight ?? app.defaultCardHeight) * scale;
     const showCap =
       (item.showCaption ?? app.captionsEnabled) && item.caption.trim().length > 0;
-    const capH = showCap ? captionBarHeight : 0;
+    const capH = showCap && !isOverlay ? captionBarHeight : 0;
     const cardTotalH = cardImgH + capH;
 
     if (curX > 0 && curX + cardW > contentAreaW + 0.5) {
@@ -212,6 +213,7 @@ export async function renderTierListToCanvas(
   const contentStartX = outerPad + labelW + rowPad;
   const contentAreaW = Math.max(120, targetWidth - outerPad * 2 - labelW - rowPad * 2);
 
+  const isOverlay = (app.captionPosition ?? 'below') === 'overlay';
   const captionFontSize = 11.5 * scale;
   const captionBarHeight = Math.round(captionFontSize * 1.85 + 6 * scale);
 
@@ -233,7 +235,7 @@ export async function renderTierListToCanvas(
       const showCaption =
         (item.showCaption ?? app.captionsEnabled) && item.caption.trim().length > 0;
       const captionH = showCaption ? captionBarHeight : 0;
-      const totalH = imgH + captionH;
+      const totalH = isOverlay ? imgH : imgH + captionH;
 
       if (curX > 0 && curX + cardW > contentAreaW + 0.5) {
         curX = 0;
@@ -421,11 +423,16 @@ export async function renderTierListToCanvas(
         }
       }
 
-      // Caption bar directly BELOW image (never overlapping image)
+      // Caption bar: below image or overlaid at the bottom edge of image
       if (card.showCaption && card.captionH > 0) {
-        const capY = card.y + card.imgH;
+        const effectiveCapH = isOverlay
+          ? Math.min(card.captionH, card.imgH)
+          : card.captionH;
+        const capY = isOverlay
+          ? card.y + card.imgH - effectiveCapH
+          : card.y + card.imgH;
         ctx.fillStyle = hexToRgba(app.captionBg, app.captionOpacity);
-        ctx.fillRect(card.x, capY, card.w, card.captionH);
+        ctx.fillRect(card.x, capY, card.w, effectiveCapH);
 
         ctx.fillStyle = app.captionTextColor;
         ctx.font = `500 ${captionFontSize}px "DM Sans", system-ui, sans-serif`;
@@ -438,7 +445,7 @@ export async function renderTierListToCanvas(
           1
         );
         if (capLines[0]) {
-          ctx.fillText(capLines[0], card.x + card.w / 2, capY + card.captionH / 2);
+          ctx.fillText(capLines[0], card.x + card.w / 2, capY + effectiveCapH / 2);
         }
       }
 

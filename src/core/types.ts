@@ -1,4 +1,5 @@
 export type ImageFitMode = 'cover' | 'contain';
+export type CaptionPosition = 'below' | 'overlay';
 
 export interface AppearanceConfig {
   canvasBg: string;
@@ -13,6 +14,7 @@ export interface AppearanceConfig {
   borderWidth: number;
   borderColor: string;
   captionsEnabled: boolean;
+  captionPosition: CaptionPosition;
   captionBg: string;
   captionOpacity: number; // 0..100
   captionTextColor: string;

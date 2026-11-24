@@ -116,8 +116,9 @@ export const InspectorPanel: React.FC<InspectorPanelProps> = ({
     (it) => it.customWidth !== undefined || it.customHeight !== undefined
   );
 
+  const normalizedAppearance = { ...DEFAULT_APPEARANCE, ...appearance };
   const isAppearanceModified =
-    JSON.stringify(appearance) !== JSON.stringify(DEFAULT_APPEARANCE);
+    JSON.stringify(normalizedAppearance) !== JSON.stringify(DEFAULT_APPEARANCE);
 
   const selectedItemContainer = selectedItem
     ? project.unrankedIds.includes(selectedItem.id)
@@ -365,7 +366,7 @@ export const InspectorPanel: React.FC<InspectorPanelProps> = ({
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <h4 className="text-xs font-semibold text-slate-900 dark:text-slate-100">
-                  Подписи под фото
+                  Подписи к фото
                 </h4>
                 <label className="relative inline-flex cursor-pointer items-center">
                   <input
@@ -382,6 +383,35 @@ export const InspectorPanel: React.FC<InspectorPanelProps> = ({
 
               {appearance.captionsEnabled && (
                 <div className="space-y-3 pt-1">
+                  <div>
+                    <span className="block text-xs text-slate-600 dark:text-slate-300 mb-1.5">
+                      Расположение плашки
+                    </span>
+                    <div className="grid grid-cols-2 gap-1.5 rounded-lg bg-slate-100 dark:bg-[#0F1115] p-1">
+                      <button
+                        type="button"
+                        onClick={() => onUpdateAppearance({ captionPosition: 'below' })}
+                        className={`rounded-md py-1.5 text-xs font-medium transition-colors ${
+                          (appearance.captionPosition ?? 'below') === 'below'
+                            ? 'bg-white dark:bg-[#232834] text-slate-900 dark:text-slate-100 shadow-sm'
+                            : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+                        }`}
+                      >
+                        Под фото
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => onUpdateAppearance({ captionPosition: 'overlay' })}
+                        className={`rounded-md py-1.5 text-xs font-medium transition-colors ${
+                          appearance.captionPosition === 'overlay'
+                            ? 'bg-white dark:bg-[#232834] text-slate-900 dark:text-slate-100 shadow-sm'
+                            : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+                        }`}
+                      >
+                        На фото
+                      </button>
+                    </div>
+                  </div>
                   <ColorRow
                     label="Цвет плашки"
                     value={appearance.captionBg}

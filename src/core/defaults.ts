@@ -19,6 +19,7 @@ export const DEFAULT_APPEARANCE: AppearanceConfig = {
   borderWidth: 1,
   borderColor: '#272C38',
   captionsEnabled: true,
+  captionPosition: 'below',
   captionBg: '#0B0D11',
   captionOpacity: 82,
   captionTextColor: '#F1F5F9',

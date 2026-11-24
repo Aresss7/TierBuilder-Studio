@@ -87,6 +87,7 @@ export const TierCard: React.FC<TierCardProps> = React.memo(
     const showCaption =
       (item.showCaption ?? appearance.captionsEnabled) &&
       (editingCaption || item.caption.trim().length > 0);
+    const isOverlayCaption = (appearance.captionPosition ?? 'below') === 'overlay';
 
     const commitCaption = () => {
       setEditingCaption(false);
@@ -94,6 +95,46 @@ export const TierCard: React.FC<TierCardProps> = React.memo(
         onUpdateCaption(item.id, draftCaption);
       }
     };
+
+    const captionBar = showCaption ? (
+      <div
+        style={{
+          backgroundColor: hexToRgbaCss(
+            appearance.captionBg,
+            appearance.captionOpacity
+          ),
+          color: appearance.captionTextColor,
+        }}
+        className={
+          isOverlayCaption
+            ? 'absolute inset-x-0 bottom-0 z-10 px-1.5 py-1 text-center'
+            : 'w-full px-1.5 py-1 text-center shrink-0'
+        }
+      >
+        {editingCaption ? (
+          <input
+            ref={inputRef}
+            type="text"
+            value={draftCaption}
+            onChange={(e) => setDraftCaption(e.target.value)}
+            onBlur={commitCaption}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') commitCaption();
+              if (e.key === 'Escape') {
+                setDraftCaption(item.caption);
+                setEditingCaption(false);
+              }
+            }}
+            onClick={(e) => e.stopPropagation()}
+            className="w-full bg-transparent text-center text-[11px] font-medium leading-tight focus:outline-none"
+          />
+        ) : (
+          <div className="truncate text-[11.5px] font-medium leading-tight">
+            {item.caption}
+          </div>
+        )}
+      </div>
+    ) : null;
 
     return (
       <div
@@ -157,7 +198,7 @@ export const TierCard: React.FC<TierCardProps> = React.memo(
           <div className="pointer-events-none absolute inset-y-0 right-0 z-20 w-1 bg-[#4F6BED]" />
         )}
 
-        {/* Image frame (never overlapped by caption bar) */}
+        {/* Image frame */}
         <div
           style={{ width: '100%', height: `${height}px` }}
           className="relative overflow-hidden bg-[#0B0D11] flex items-center justify-center shrink-0"
@@ -181,44 +222,12 @@ export const TierCard: React.FC<TierCardProps> = React.memo(
               <span className="max-w-full truncate text-[10px]">{item.fileName}</span>
             </div>
           )}
+
+          {isOverlayCaption && captionBar}
         </div>
 
         {/* Caption bar directly below image */}
-        {showCaption && (
-          <div
-            style={{
-              backgroundColor: hexToRgbaCss(
-                appearance.captionBg,
-                appearance.captionOpacity
-              ),
-              color: appearance.captionTextColor,
-            }}
-            className="w-full px-1.5 py-1 text-center shrink-0"
-          >
-            {editingCaption ? (
-              <input
-                ref={inputRef}
-                type="text"
-                value={draftCaption}
-                onChange={(e) => setDraftCaption(e.target.value)}
-                onBlur={commitCaption}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') commitCaption();
-                  if (e.key === 'Escape') {
-                    setDraftCaption(item.caption);
-                    setEditingCaption(false);
-                  }
-                }}
-                onClick={(e) => e.stopPropagation()}
-                className="w-full bg-transparent text-center text-[11px] font-medium leading-tight focus:outline-none"
-              />
-            ) : (
-              <div className="truncate text-[11.5px] font-medium leading-tight">
-                {item.caption}
-              </div>
-            )}
-          </div>
-        )}
+        {!isOverlayCaption && captionBar}
       </div>
     );
   }
